@@ -9,6 +9,11 @@ class Api::SessionsController < ApplicationController
     @user = User.find_by(username: params['username'])
 
     if @user && @user.authenticate(params[:password])
+      session['user_id'] = @user.id
+      render json: {
+        token: get_token(payload(@user.username, @user.id)),
+        user: @user
+      }
     else
       render json: {
         errors: "Wrong Credentials!"
