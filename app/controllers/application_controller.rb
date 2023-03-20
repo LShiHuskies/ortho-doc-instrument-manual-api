@@ -17,7 +17,7 @@ class ApplicationController < ActionController::Base
     end
   end
 
-  def valid_token?
+  def valid_token? 
     !!try_decode_token
   end
 
@@ -32,7 +32,7 @@ class ApplicationController < ActionController::Base
 
   def try_decode_token
     begin
-      decoded = JWT.decode authorization_token(), secret_key(), true, { algorithm: 'HS256' }
+      decoded = JWT.decode authorization_token(), secret_key, true, { algorithm: 'HS256' }
     rescue JWT::VerificationError, JWT::DecodeError
       return nil
     end
