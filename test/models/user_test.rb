@@ -5,7 +5,8 @@ class UserTest < ActiveSupport::TestCase
   #   assert true
   # end
   def setup
-    @user = User.new
+    @office = Office.create(name: "Office", address: 'something here')
+    @user = User.new(office: @office)
   end
 
   test "User needs attributes" do
@@ -44,7 +45,7 @@ class UserTest < ActiveSupport::TestCase
     @user.username = "hello"
     @user.password = "12345678"
     @user.email = "sdf@something.com"
-    @user2 = User.new(username: "hello", password: "12345678", email: "something@yahoo.com")
+    @user2 = User.new(username: "hello", password: "12345678", email: "something@yahoo.com", office: @office)
     @user2.save
     @user.save
     assert_not @user.valid?
@@ -56,7 +57,7 @@ class UserTest < ActiveSupport::TestCase
     @user.email = 'sdf@yahoo.com'
     @user.save
 
-    @user2 = User.new(username: 'Hello', password: '12345678', email: "something@yahoo.com")
+    @user2 = User.new(username: 'Hello', password: '12345678', email: "something@yahoo.com", office: @office)
     assert_not @user2.valid?
   end
 

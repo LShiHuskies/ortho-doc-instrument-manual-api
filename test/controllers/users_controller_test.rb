@@ -3,16 +3,17 @@ require 'test_helper'
 class UsersControllerTest < ActionDispatch::IntegrationTest
 
   def setup
-    @user = User.new(username: 'testing1', first_name: 'tester', last_name: 'tester', password: '12345678', email: 'test@example.com')
+    @office = Office.create(name: 'something', address: 'Somewhere here')
+    @user = User.new(office: @office, username: 'testing1', first_name: 'tester', last_name: 'tester', password: '12345678', email: 'test@example.com')
   end
 
   test 'creating a user with and without proper attributes' do
     assert_difference('User.count') do
-      post api_users_path, params: { user: { username: 'testing1', first_name: 'first_name', last_name: 'last_name', password: 'test@example.com', email: 'test@example.com' } }
+      post api_users_path, params: { user: { username: 'testing1', first_name: 'first_name', last_name: 'last_name', password: 'test@example.com', email: 'test@example.com', office_id: @office.id } }
     end
 
     assert_difference('User.count', 0) do
-      post api_users_path, params: { user: { username: 'testing1', first_name: 'first_name', last_name: 'last_name', password: 'psafdsf', email: 'test@example.com' } }
+      post api_users_path, params: { user: { username: 'testing1', first_name: 'first_name', last_name: 'last_name', password: 'psafdsf', email: 'test@example.com', office_id: @office.id } }
     end
   end
 
@@ -48,7 +49,7 @@ class UsersControllerTest < ActionDispatch::IntegrationTest
 
   test 'should not be able to show one user if not their own' do
     @user.save
-    @user2 = User.create(username: 'testing2', first_name: 'tester', last_name: 'tester', password: '12345678', email: 'test2@example.com')
+    @user2 = User.create(username: 'testing2', first_name: 'tester', last_name: 'tester', password: '12345678', email: 'test2@example.com', office: @office)
 
     token = sign_in_as(@user)
 
@@ -76,7 +77,7 @@ class UsersControllerTest < ActionDispatch::IntegrationTest
 
   test 'should not be able to update the user that is not theirs' do
     @user.save
-    @user2 = User.create(username: 'testing2', first_name: 'tester', last_name: 'tester', password: '12345678', email: 'test2@example.com')
+    @user2 = User.create(username: 'testing2', first_name: 'tester', last_name: 'tester', password: '12345678', email: 'test2@example.com', office: @office)
 
     token = sign_in_as(@user)
 
@@ -88,7 +89,7 @@ class UsersControllerTest < ActionDispatch::IntegrationTest
   test 'should not delete the user if it is not theirs' do
     @user.save
     token = sign_in_as(@user)
-    @user2 = User.create(username: 'testing2', first_name: 'tester', last_name: 'tester', password: '12345678', email: 'test2@example.com')
+    @user2 = User.create(username: 'testing2', first_name: 'tester', last_name: 'tester', password: '12345678', email: 'test2@example.com', office: @office)
     delete api_user_path(@user2), headers: { Authorization: token }
 
     assert_response 401
