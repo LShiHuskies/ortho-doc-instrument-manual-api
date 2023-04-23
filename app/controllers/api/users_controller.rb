@@ -5,7 +5,12 @@ class Api::UsersController < ApplicationController
 
   def index
     @users = User.all
-    render json: @users
+    render json: @users, include: :messages
+  end
+
+  def show
+    @user = User.find(params[:id])
+    render json: @user, include: :messages
   end
 
   def new
@@ -52,7 +57,7 @@ def destroy
 end
 
 private
-
+  
   def user_params
     params.require(:user).permit(:username, :first_name, :last_name, :password, :email)
   end
