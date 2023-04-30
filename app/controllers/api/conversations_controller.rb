@@ -4,7 +4,7 @@ class Api::ConversationsController < ApplicationController
   
     # GET /conversations or /conversations.json
     def index
-      @conversations = Conversation.all 
+      @conversations = Conversation.all
       render json: @conversations, include: :messages
     end
   
@@ -27,8 +27,8 @@ class Api::ConversationsController < ApplicationController
     def create
       @conversation = Conversation.find(params[:id])
       @message = @conversation.messages.build(message_params)
-      @message.save
-      ConversationChannel.broadcast_to(@conversation, @message)
+      # @message.save
+      # ConversationChannel.broadcast_to(@conversation, @message)
       # @conversation = Conversation.new(conversation_params)
   
       # respond_to do |format|

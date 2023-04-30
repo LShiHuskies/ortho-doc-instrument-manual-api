@@ -19,7 +19,10 @@ Rails.application.routes.draw do
     resources :conversations do
       resources :messages
     end
+    resources :messages
   end
+
+  resources :messages
 
   get 'login', to: 'api/sessions#new'
   post 'login', to: 'api/sessions#create'
