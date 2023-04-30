@@ -2,7 +2,7 @@ class User < ApplicationRecord
   before_save { self.email = email.downcase }
 
   has_secure_password
-
+  has_one_attached :avatar
   has_many :messages
   has_many :conversations
 

@@ -1,10 +1,11 @@
 class Api::MessagesController < ApplicationController
-  before_action :load_user
+  # before_action :load_user
   before_action :set_message, only: %i[ show edit update destroy ]
+  skip_before_action :verify_authenticity_token
 
   # GET /messages or /messages.json
   def index
-    @messages = @user.messages
+    @messages = Message.all
     render json: @messages
   end
 
@@ -25,9 +26,12 @@ class Api::MessagesController < ApplicationController
 
   # POST /messages or /messages.json
   def create
-    @conversation = Conversation.find(params[:conversation_id])
-    @message = @conversation.messages.new(message_params)
+    # @conversation = Conversation.find(params[:conversation_id])
+    # @message = @conversation.messages.new(message_params)
+    @message = Message.new(message_params)
     if @message.save
+      # ActionCable.server.broadcast 'messages',
+      #   message: message.content,
       render json: @message
     else
       render "WRONG MESSAGE"
