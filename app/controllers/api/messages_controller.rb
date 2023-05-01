@@ -5,6 +5,7 @@ class Api::MessagesController < ApplicationController
 
   # GET /messages or /messages.json
   def index
+    byebug
     @messages = Message.all
     render json: @messages
   end
@@ -26,15 +27,20 @@ class Api::MessagesController < ApplicationController
 
   # POST /messages or /messages.json
   def create
+    byebug
     # @conversation = Conversation.find(params[:conversation_id])
     # @message = @conversation.messages.new(message_params)
     @message = Message.new(message_params)
+    byebug
     if @message.save
+      byebug
       # ActionCable.server.broadcast 'messages',
       #   message: message.content,
+      ActionCable.server.broadcast 'MessagesChannel', MessageSerializer.new(@message)
       render json: @message
     else
-      render "WRONG MESSAGE"
+      byebug
+      render json: { message: "Wrong Message" }, status: :403
     end
     # @message = Message.create(message_params)
     # @conversation = Conversation.find(@message[:conversation_id])

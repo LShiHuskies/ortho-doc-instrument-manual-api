@@ -1,9 +1,9 @@
 Rails.application.routes.draw do
   
-  
+  # host = Rails.env == 'development' ? "localhost:3000" : "action-game-app-api.herokuapp.com"
+  # default_url_options :host => host
 
   # action cable server
-  mount ActionCable.server => "/cable"
 
   # resources :conversations do
   #   resources :messages
@@ -22,9 +22,11 @@ Rails.application.routes.draw do
     resources :messages
   end
 
-  resources :messages
+  # resources :messages
 
   get 'login', to: 'api/sessions#new'
   post 'login', to: 'api/sessions#create'
   delete 'logout', to: 'api/sessions#destroy'
+
+  mount ActionCable.server => '/cable'
 end
