@@ -32,6 +32,7 @@ class Api::MessagesController < ApplicationController
     if @message.save
       # ActionCable.server.broadcast 'messages',
       #   message: message.content,
+      ActionCable.server.broadcast 'MessagesChannel', @message
       render json: @message
     else
       render "WRONG MESSAGE"
