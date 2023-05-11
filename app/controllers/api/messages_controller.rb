@@ -29,9 +29,11 @@ class Api::MessagesController < ApplicationController
     # @conversation = Conversation.find(params[:conversation_id])
     # @message = @conversation.messages.new(message_params)
     @message = Message.new(message_params)
+    
     if @message.save
       # ActionCable.server.broadcast 'messages',
       #   message: message.content,
+      ActionCable.server.broadcast 'MessagesChannel', @message
       render json: @message
     else
       render "WRONG MESSAGE"
