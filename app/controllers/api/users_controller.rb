@@ -6,11 +6,15 @@ class Api::UsersController < ApplicationController
   def index
     @users = User.all
     render json: @users, include: :messages
+    # render json: UserSerializer.new(@users).serializable_hash[:data][:attributes]
   end
 
   def show
-    @user = User.find(params[:id]).to_json(include: [:avatar])
+    @user = User.find(params[:id])
+    # @user = User.find(params[:id]).to_json(include: [:avatar])
+    # @avatar = rails_blob_path(user.avatar)
     render json: @user, include: :messages
+    # render json: UserSerializer.new(@user).serializable_hash[:data][:attributes]
   end
 
   def new
@@ -20,6 +24,7 @@ class Api::UsersController < ApplicationController
 
   def create
     @user = User.new(user_params)
+    @user.avatar.attach(params[:avatar])
     if @user.save
       # render json: @user
       render json: {
