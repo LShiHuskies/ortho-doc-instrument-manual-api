@@ -10,4 +10,5 @@ module ApplicationCable
       @session = session
       @user = current_user
     end
+  end
 end

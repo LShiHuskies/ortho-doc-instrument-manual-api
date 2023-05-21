@@ -29,12 +29,11 @@ class Api::MessagesController < ApplicationController
     # @conversation = Conversation.find(params[:conversation_id])
     # @message = @conversation.messages.new(message_params)
     @message = Message.new(message_params)
-    
     if @message.save
       # ActionCable.server.broadcast 'messages',
       #   message: message.content,
       ActionCable.server.broadcast 'MessagesChannel', @message
-      render json: @message
+      render json: { message: @message }
     else
       render "WRONG MESSAGE"
     end
@@ -91,6 +90,6 @@ class Api::MessagesController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def message_params
-      params.require(:message).permit(:content, :conversation_id, :user_id)
+      params.require(:message).permit(:username, :content, :conversation_id, :user_id)
     end
 end
