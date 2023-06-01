@@ -40,6 +40,8 @@ gem 'active_model_serializers'
 
 gem 'active_storage_validations'
 
+gem 'mail'
+
 # Use Capistrano for deployment
 # gem 'capistrano-rails', group: :development
 
