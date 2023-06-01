@@ -60,15 +60,7 @@ Rails.application.configure do
 
   # It enables to send email from local environment.
   config.action_mailer.default_url_options = { host: 'localhost', port: 3000, protocol: 'http' }
-  # ActionMailer::Base.smtp_settings = {
-  #   address:  'smtp.sendgrid.net',
-  #   port: 587,
-  #   domain: 'gmail.com',
-  #   user_name: 'apikey',
-  #   password: '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',
-  #   authentication: :plain,
-  #   enable_starttls_auto: true,
-  # }
+  
   # Print deprecation notices to the Rails logger.
   config.active_support.deprecation = :log
 
