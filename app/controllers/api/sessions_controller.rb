@@ -24,4 +24,5 @@ class Api::SessionsController < ApplicationController
     session.delete(:user_id)
   end
 
+
 end
