@@ -20,9 +20,14 @@ class User < ApplicationRecord
     Rails.application.routes.url_helpers.url_for(avatar) if avatar.attached?
   end
 
-  def authenticated?(remember_token)
-    return false if remember_digest.nil?
-    BCrypt::Password.new(remember_digest).is_password?(remember_token)
+  def authenticated?(attribute, token)
+    digest = self.send("#{attribute}_digest")
+    return false if digest.nil?
+    BCrypt::Password.new(digest).is_password?(token)
+  end
+
+  def activate
+    update_column(:activated, true)
   end
 
   private
@@ -50,5 +55,4 @@ class User < ApplicationRecord
     update_attribute(:remember_digest, User.digest(remember_token))
   end
 
-  
 end
