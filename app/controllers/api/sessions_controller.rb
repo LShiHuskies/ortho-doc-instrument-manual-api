@@ -17,7 +17,6 @@ class Api::SessionsController < ApplicationController
       render json: {
         errors: "Please activate your account first by checking your email!"
       }
-    end
     else
       render json: {
         errors: "Wrong Credentials!"
