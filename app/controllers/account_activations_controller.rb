@@ -1,7 +1,6 @@
 class AccountActivationsController < ApplicationController
     def edit
         @user = User.find_by(email: params[:email])
-        
         token = get_token(payload(@user.username, @user.id))
         # if @user && !@user.activated? && @user.authenticated?(:activation, token)
         if @user && !@user.activated? && true
