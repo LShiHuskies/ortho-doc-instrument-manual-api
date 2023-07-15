@@ -81,3 +81,4 @@ gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
 gem "jsonapi-serializer", "~> 2.2"
 
 gem 'bundler', '~> 2.3', '>= 2.3.5'
+ 
