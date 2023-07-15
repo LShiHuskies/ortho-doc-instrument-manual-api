@@ -2,19 +2,20 @@ class Api::UsersController < ApplicationController
   skip_before_action :verify_authenticity_token
   before_action :requires_login, only: [:index, :show, :edit, :update, :destroy]
   before_action :get_user, only: [:show, :edit, :update, :destroy]
+  
 
   def index
     @users = User.all
-    render json: @users, include: :messages
-    # render json: UserSerializer.new(@users).serializable_hash[:data][:attributes]
+    render json: UserSerializer.new(@users).serializable_hash[:data].map { |hash| hash[:attributes] }
   end
 
   def show
-    @user = User.find(params[:id])
-    # @user = User.find(params[:id]).to_json(include: [:avatar])
-    # @avatar = rails_blob_path(user.avatar)
-    render json: @user, include: :messages
-    # render json: UserSerializer.new(@user).serializable_hash[:data][:attributes]
+    if !authorized(@user)
+      render json: { message: 'Off Limits' }, status: :unauthorized
+    else
+      render json: UserSerializer.new(@user).serializable_hash[:data][:attributes]
+    end
+    # @user = User.find(params[:id])
   end
 
   def new
@@ -24,9 +25,9 @@ class Api::UsersController < ApplicationController
 
   def create
     @user = User.new(user_params)
-    @user.avatar.attach(params[:avatar])
     if @user.save
-      # render json: @user
+      UserMailer.with(user:@user).activate_account(@user).deliver_now
+      # render json: { message: 'User created. Verification email sent.' }
       render json: {
         token: get_token(payload(@user.username, @user.id)),
         user: @user
@@ -36,17 +37,29 @@ class Api::UsersController < ApplicationController
     end
   end
 
-def show
-  if !authorized(@user)
-    render json: { message: 'Off Limits' }, status: :unauthorized
-  else
-    render json: @user
+  def verify_email
+    user = User.find_by(verification_token: params[:token])
+    if user
+      user.update(verified: true, verification_token: nil)
+      render json: { message: 'Email verified successfully.' }
+    else
+      render json: { error: 'Invalid verification token.' }, status: :unprocessable_entity
+    end
   end
-end
+
+# def show
+#   if !authorized(@user)
+#     render json: { message: 'Off Limits' }, status: :unauthorized
+#   else
+#     render json: @user
+#   end
+# end
 
 def edit
   render json: @user
 end
+
+
 
 def update
   if @user.update(user_params) && authorized(@user)
@@ -64,6 +77,7 @@ def destroy
   end
 end
 
+
 private
   
   def user_params
@@ -74,5 +88,4 @@ private
     @user = User.find(params[:id])
   end
 
-  
 end

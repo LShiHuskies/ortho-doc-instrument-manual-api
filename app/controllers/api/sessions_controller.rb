@@ -7,11 +7,15 @@ class Api::SessionsController < ApplicationController
 
   def create
     @user = User.find_by(username: params['username'])
-    if @user && @user.authenticate(params[:password])
+    if @user && @user.activated? && @user.authenticate(params[:password])
       session['user_id'] = @user.id
       render json: {
         token: get_token(payload(@user.username, @user.id)),
-        user: @user
+        user: UserSerializer.new(@user).serializable_hash[:data][:attributes]
+      }
+    elsif !@user.activated?
+      render json: {
+        errors: "Please activate your account first by checking your email!"
       }
     else
       render json: {
@@ -23,5 +27,6 @@ class Api::SessionsController < ApplicationController
   def destroy
     session.delete(:user_id)
   end
+
 
 end
